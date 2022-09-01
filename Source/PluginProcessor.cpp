@@ -93,7 +93,8 @@ void TimeDomainTestingAudioProcessor::changeProgramName (int index, const juce::
 //==============================================================================
 void TimeDomainTestingAudioProcessor::prepareToPlay (double sampleRate, int samplesPerBlock)
 {
-    allpass.prepareToPlay(200.0f, 0.7, static_cast<float>(sampleRate));
+    allpass.prepareToPlay(45.0f, 0.7, static_cast<float>(sampleRate));
+    comb.prepareToPlay(200.0f, 0.7, static_cast<float>(sampleRate));
 }
 
 void TimeDomainTestingAudioProcessor::releaseResources()
@@ -146,7 +147,8 @@ void TimeDomainTestingAudioProcessor::processBlock (juce::AudioBuffer<float>& bu
     //TODO: implement Comb, implement Mixing matrix and multichannel
     //https://signalsmith-audio.co.uk/writing/2021/lets-write-a-reverb/
 
-    allpass.processBlock(buffer);
+    //allpass.processBlock(buffer);
+    comb.feedbackCombOut(buffer);
 }
 
 //==============================================================================

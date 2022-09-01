@@ -5,6 +5,8 @@
               jucerFormatVersion="1">
   <MAINGROUP id="CTeIp4" name="TimeDomainTesting">
     <GROUP id="{BEF8ED40-8C52-105D-6EAF-6CB5B2B17F43}" name="Source">
+      <FILE id="kt24nQ" name="Comb.cpp" compile="1" resource="0" file="Source/Comb.cpp"/>
+      <FILE id="n8fvcq" name="Comb.h" compile="0" resource="0" file="Source/Comb.h"/>
       <FILE id="J6yeJv" name="DelayLine.cpp" compile="1" resource="0" file="Source/DelayLine.cpp"/>
       <FILE id="Keg3L9" name="DelayLine.h" compile="0" resource="0" file="Source/DelayLine.h"/>
       <FILE id="kfSyFz" name="Allpass.cpp" compile="1" resource="0" file="Source/Allpass.cpp"/>

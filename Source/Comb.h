@@ -1,8 +1,8 @@
 /*
   ==============================================================================
 
-    Allpass.h
-    Created: 17 Aug 2022 10:54:15am
+    Comb.h
+    Created: 1 Sep 2022 4:56:38pm
     Author:  Enrico Damiani
 
   ==============================================================================
@@ -11,24 +11,28 @@
 #pragma once
 #include "DelayLine.h"
 
-class AllPass
+class Comb
 {
-
 public:
-    AllPass();
-    ~AllPass();
+    Comb();
+    ~Comb();
 
     void initDelayLine(float dTimeMs, float sampleRate);
 
     void prepareToPlay(float dTimeMs, float gain, float sampleRate);
 
-    void processBlock(juce::AudioBuffer<float>&);
+    void feedforwardCombOut(juce::AudioBuffer<float>&);
+
+    void feedbackCombOut(juce::AudioBuffer<float>&);
+
+    void LPFCombOut(juce::AudioBuffer<float>&);
 
 private:
-    float allPassGain;
+    float combGain;
     float delayTime;
 
     float delayIn;
     DelayLine delay;
     float delayOut;
+
 };

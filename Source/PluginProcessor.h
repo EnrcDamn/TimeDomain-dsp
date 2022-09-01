@@ -9,8 +9,8 @@
 #pragma once
 
 #include <JuceHeader.h>
-#include "DelayLine.h"
 #include "Allpass.h"
+#include "Comb.h"
 
 //==============================================================================
 /**
@@ -61,6 +61,7 @@ public:
 private:
 
     AllPass allpass;
+    Comb comb;
 
     //==============================================================================
     JUCE_DECLARE_NON_COPYABLE_WITH_LEAK_DETECTOR (TimeDomainTestingAudioProcessor)

@@ -33,11 +33,27 @@ void Comb::prepareToPlay(float dTimeMs, float gain, float sampleRate)
     initDelayLine(dTimeMs, sampleRate);
 }
 
+// FEEDFORWARD
 void Comb::feedforwardCombOut(juce::AudioBuffer<float>& buffer)
 {
+    for (int channel = 0; channel < buffer.getNumChannels(); ++channel)
+    {
+        auto writeSignal = buffer.getWritePointer(channel);
 
+        for (int sample = 0; sample < buffer.getNumSamples(); ++sample)
+        {
+            const float inputSample = writeSignal[sample];
+            delayIn = inputSample;
+            delayOut = delay.delayRead() * combGain;
+            delay.writeSample(&delayIn); // write sample to buffer, then update read pos
+            const float feedforwardCombOut = (delayIn * feedforwardGain) + delayOut;
+
+            writeSignal[sample] = feedforwardCombOut; // copy allpass output to buffer
+        }
+    }
 }
 
+// FEEDBACK
 void Comb::feedbackCombOut(juce::AudioBuffer<float>& buffer)
 {
     for (int channel = 0; channel < buffer.getNumChannels(); ++channel)

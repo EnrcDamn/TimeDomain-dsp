@@ -35,4 +35,5 @@ private:
     DelayLine delay;
     float delayOut;
 
+    float feedforwardGain = 1.0f;
 };

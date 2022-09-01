@@ -148,7 +148,7 @@ void TimeDomainTestingAudioProcessor::processBlock (juce::AudioBuffer<float>& bu
     //https://signalsmith-audio.co.uk/writing/2021/lets-write-a-reverb/
 
     //allpass.processBlock(buffer);
-    comb.feedbackCombOut(buffer);
+    comb.feedforwardCombOut(buffer);
 }
 
 //==============================================================================

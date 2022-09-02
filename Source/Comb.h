@@ -38,5 +38,5 @@ private:
     DelayLine delay;
     float delayOut;
 
-    float feedforwardGain = 1.0f; //https://ccrma.stanford.edu/~jos/pasp/Feedforward_Comb_Filters.html
+    const float feedforwardGain = 1.0f; //https://ccrma.stanford.edu/~jos/pasp/Feedforward_Comb_Filters.html
 };

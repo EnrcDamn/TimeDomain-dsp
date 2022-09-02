@@ -40,7 +40,7 @@ void AllPass::process(juce::AudioBuffer<float>& buffer)
         for (int sample = 0; sample < buffer.getNumSamples(); ++sample)
         {
             const float inputSample = writeSignal[sample];
-            delayOut = delay.delayRead(); // read current position (first time from empty delay buffer)
+            delayOut = delay.readPos(); // read current position (first time from empty delay buffer)
             delayIn = inputSample + (delayOut * allPassGain);
             delay.writeSample(&delayIn); // write sample to buffer, then update read pos
             const float allPassOut = (delayIn + delayOut) * -allPassGain;

@@ -23,7 +23,7 @@ public:
 
     void writeSample(const float *currentSample);
 
-    float delayRead();
+    float readPos();
 
 private:
     float* delayBuffer;

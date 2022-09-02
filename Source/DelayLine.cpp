@@ -22,11 +22,8 @@ DelayLine::~DelayLine()
 
 void DelayLine::prepareToPlay(float dTimeMs, float sampleRate)
 {
-    delayTime = (int)(dTimeMs * sampleRate) / 1000;
+    delayTime = static_cast<int>(dTimeMs * sampleRate) / 1000;
     delayBuffer = new float[delayTime] {0.0f};
-
-    for (int i = 0; i < delayTime; i++)
-        DBG("Element " << juce::String(i) <<": " << juce::String(delayBuffer[i]));
 }
 
 void DelayLine::releaseResources()
@@ -40,7 +37,7 @@ void DelayLine::writeSample(const float* currentSample)
     readPosition = (readPosition != delayTime - 1 ? readPosition + 1 : 0);
 }
 
-float DelayLine::delayRead()
+float DelayLine::readPos()
 {
     out = delayBuffer[readPosition];
     return out;

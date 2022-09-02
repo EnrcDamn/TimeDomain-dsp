@@ -94,7 +94,7 @@ void TimeDomainTestingAudioProcessor::changeProgramName (int index, const juce::
 void TimeDomainTestingAudioProcessor::prepareToPlay (double sampleRate, int samplesPerBlock)
 {
     allpass.prepareToPlay(45.0f, 0.7, static_cast<float>(sampleRate));
-    comb.prepareToPlay(200.0f, 0.7, static_cast<float>(sampleRate), 3);
+    comb.prepareToPlay(200.0f, 0.7, static_cast<float>(sampleRate), 1);
 }
 
 void TimeDomainTestingAudioProcessor::releaseResources()

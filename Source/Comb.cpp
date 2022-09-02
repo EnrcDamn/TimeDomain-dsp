@@ -54,7 +54,7 @@ void Comb::feedforwardCombOut(juce::AudioBuffer<float>& buffer)
         {
             const float inputSample = writeSignal[sample];
             delayIn = inputSample;
-            delayOut = delay.delayRead() * combGain;
+            delayOut = delay.readPos() * combGain;
             delay.writeSample(&delayIn); // write sample to buffer, then update read pos
             const float feedforwardCombOut = (delayIn * feedforwardGain) + delayOut;
 
@@ -73,7 +73,7 @@ void Comb::feedbackCombOut(juce::AudioBuffer<float>& buffer)
         for (int sample = 0; sample < buffer.getNumSamples(); ++sample)
         {
             const float inputSample = writeSignal[sample];
-            delayOut = delay.delayRead() * -combGain;
+            delayOut = delay.readPos() * -combGain;
             delayIn = (inputSample * combGain) + delayOut;
             delay.writeSample(&delayIn); // write sample to buffer, then update read pos
             const float feedbackCombOut = delayIn;

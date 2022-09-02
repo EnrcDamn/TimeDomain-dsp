@@ -11,6 +11,7 @@
 #include <JuceHeader.h>
 #include "Allpass.h"
 #include "Comb.h"
+#include "MixMatrix.h"
 
 //==============================================================================
 /**
@@ -60,8 +61,13 @@ public:
 
 private:
 
-    AllPass allpass;
-    Comb comb;
+    // TODO: replace all new operators with std::vector (std::array?)
+    /*int apSize = 3;
+    AllPass* allpasses = new AllPass[apSize];
+    int cSize = 4;
+    Comb* combs = new Comb[cSize];
+    SimpleMixMatrix mm;*/
+    AllPass ap;
 
     //==============================================================================
     JUCE_DECLARE_NON_COPYABLE_WITH_LEAK_DETECTOR (TimeDomainTestingAudioProcessor)

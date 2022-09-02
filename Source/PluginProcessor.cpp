@@ -93,8 +93,12 @@ void TimeDomainTestingAudioProcessor::changeProgramName (int index, const juce::
 //==============================================================================
 void TimeDomainTestingAudioProcessor::prepareToPlay (double sampleRate, int samplesPerBlock)
 {
-    allpass.prepareToPlay(45.0f, 0.7, static_cast<float>(sampleRate));
-    comb.prepareToPlay(200.0f, 0.7, static_cast<float>(sampleRate), 1);
+    /*for (int i = 0; i < apSize; ++i)
+        allpasses[i].prepareToPlay(45.0f, 0.7, static_cast<float>(sampleRate));
+
+    for (int i = 0; i < cSize; ++i)
+        combs[i].prepareToPlay(200.0f, 0.7, static_cast<float>(sampleRate), 1);*/
+    ap.prepareToPlay(45.0f, 0.7, static_cast<float>(sampleRate));
 }
 
 void TimeDomainTestingAudioProcessor::releaseResources()
@@ -144,8 +148,17 @@ void TimeDomainTestingAudioProcessor::processBlock (juce::AudioBuffer<float>& bu
     for (auto i = totalNumInputChannels; i < totalNumOutputChannels; ++i)
         buffer.clear (i, 0, buffer.getNumSamples());
 
-    allpass.process(buffer);
-    comb.process(buffer);
+    // SCHROEDER REV
+    /*for (int i = 0; i < apSize; ++i)
+        allpasses[i].process(buffer);
+
+    for (int i = 0; i < cSize; ++i)
+        combs[i].process(buffer);
+
+    mm.mix(&combs);*/
+
+
+    ap.process(buffer);
 }
 
 //==============================================================================

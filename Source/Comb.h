@@ -19,7 +19,9 @@ public:
 
     void initDelayLine(float dTimeMs, float sampleRate);
 
-    void prepareToPlay(float dTimeMs, float gain, float sampleRate);
+    void prepareToPlay(float dTimeMs, float gain, float sampleRate, int mode);
+
+    void process(juce::AudioBuffer<float>&);
 
     void feedforwardCombOut(juce::AudioBuffer<float>&);
 
@@ -28,6 +30,7 @@ public:
     void LPFCombOut(juce::AudioBuffer<float>&);
 
 private:
+    int combMode;
     float combGain;
     float delayTime;
 
@@ -35,5 +38,5 @@ private:
     DelayLine delay;
     float delayOut;
 
-    float feedforwardGain = 1.0f;
+    float feedforwardGain = 1.0f; //https://ccrma.stanford.edu/~jos/pasp/Feedforward_Comb_Filters.html
 };

@@ -31,7 +31,7 @@ void AllPass::prepareToPlay(float dTimeMs, float gain, float sampleRate)
     initDelayLine(dTimeMs, sampleRate);
 }
 
-void AllPass::processBlock(juce::AudioBuffer<float>& buffer)
+void AllPass::process(juce::AudioBuffer<float>& buffer)
 {
     for (int channel = 0; channel < buffer.getNumChannels(); ++channel)
     {

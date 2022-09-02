@@ -22,7 +22,7 @@ public:
 
     void prepareToPlay(float dTimeMs, float gain, float sampleRate);
 
-    void processBlock(juce::AudioBuffer<float>&);
+    void process(juce::AudioBuffer<float>&);
 
 private:
     float allPassGain;

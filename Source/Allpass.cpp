@@ -33,6 +33,7 @@ void AllPass::prepareToPlay(float dTimeMs, float gain, float sampleRate)
 
 void AllPass::process(juce::AudioBuffer<float>& buffer)
 {
+    // TODO: fix function, put buffer loop outside and add return value (sample)
     for (int channel = 0; channel < buffer.getNumChannels(); ++channel)
     {
         auto writeSignal = buffer.getWritePointer(channel);

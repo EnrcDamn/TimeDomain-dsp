@@ -43,8 +43,7 @@ float Comb::process(float currentSample)
         return LPFCombOut(currentSample);
 
     //TODO: review this function
-    else
-        return currentSample;
+    return currentSample;
 }
 
 // FEEDFORWARD

@@ -93,19 +93,24 @@ void TimeDomainTestingAudioProcessor::changeProgramName (int index, const juce::
 //==============================================================================
 void TimeDomainTestingAudioProcessor::prepareToPlay (double sampleRate, int samplesPerBlock)
 {
-    /*for (int i = 0; i < apSize; ++i)
-        allpasses[i].prepareToPlay(45.0f, 0.7, static_cast<float>(sampleRate));
+    for (int i = 0; i < apSize; ++i)
+        allpasses[i].prepareToPlay(5.0f, 0.4, static_cast<float>(sampleRate));
 
-    for (int i = 0; i < cSize; ++i)
-        combs[i].prepareToPlay(200.0f, 0.7, static_cast<float>(sampleRate), 1);*/
-    ap.prepareToPlay(200.0f, 0.7, static_cast<float>(sampleRate));
-    c.prepareToPlay(100.0f, 0.7, static_cast<float>(sampleRate), 1);
+    
+    combs[0].prepareToPlay(100.0f, 0.75, static_cast<float>(sampleRate), 1);
+    combs[1].prepareToPlay(220.0f, 0.74, static_cast<float>(sampleRate), 1);
+    combs[2].prepareToPlay(134.0f, 0.8, static_cast<float>(sampleRate), 1);
+    combs[3].prepareToPlay(162.0f, 0.7, static_cast<float>(sampleRate), 1);
+    /*ap.prepareToPlay(200.0f, 0.5, static_cast<float>(sampleRate));
+    c.prepareToPlay(100.0f, 0.5, static_cast<float>(sampleRate), 1);*/
 }
 
 void TimeDomainTestingAudioProcessor::releaseResources()
 {
     // When playback stops, you can use this as an opportunity to free up any
     // spare memory, etc.
+    delete[] allpasses;
+    delete[] combs;
 }
 
 #ifndef JucePlugin_PreferredChannelConfigurations
@@ -165,19 +170,34 @@ void TimeDomainTestingAudioProcessor::processBlock (juce::AudioBuffer<float>& bu
 // Dumb processing function for effect chain
 void TimeDomainTestingAudioProcessor::processEffectChain(juce::AudioBuffer<float>& buffer)
 {
-    for (int channel = 0; channel < buffer.getNumChannels(); ++channel)
+    float** writeChannelSignal = new float*[buffer.getNumChannels()];
+    for (int i = 0; i < buffer.getNumChannels(); ++i)
+        writeChannelSignal[i] = buffer.getWritePointer(i);
+
+    for (int sample = 0; sample < buffer.getNumSamples(); ++sample)
     {
-        auto writeSignal = buffer.getWritePointer(channel);
+        float inputSample = 0.0f;
+        //auto inputSample = writeSignal[sample];
+        for (int i = 0; i < buffer.getNumChannels(); i++)
+            inputSample += writeChannelSignal[i][sample];
 
-        for (int sample = 0; sample < buffer.getNumSamples(); ++sample)
+        for (int ap = 0; ap < apSize; ap++)
         {
-            auto inputSample = writeSignal[sample];
-
-            auto firstUnit = ap.process(inputSample);
-            auto lastUnit = c.process(firstUnit);
-            writeSignal[sample] = lastUnit;
+            inputSample = allpasses[ap].process(inputSample);
         }
+
+        float combSection[4];
+        for (int c = 0; c < cSize; c++)
+        {
+            combSection[c] = combs[c].process(inputSample);
+        }
+
+        auto mixed = mm.mix(combSection);
+
+        writeChannelSignal[0][sample] = mixed.first;
+        writeChannelSignal[1][sample] = mixed.second;
     }
+    
 }
 
 //==============================================================================

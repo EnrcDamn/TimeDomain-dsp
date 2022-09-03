@@ -17,7 +17,7 @@ class SimpleMixMatrix
 public:
     SimpleMixMatrix();
     ~SimpleMixMatrix();
-    float mix(float* signalArr);
+    std::pair<float, float> mix(float* signalArr);
 
 private:
     float* mixArr;

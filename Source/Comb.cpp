@@ -32,60 +32,50 @@ void Comb::prepareToPlay(float dTimeMs, float gain, float sampleRate, int mode)
     combMode = mode;
 }
 
-void Comb::process(juce::AudioBuffer<float>& buffer)
+float Comb::process(float currentSample)
 {
     jassert(combMode == 0 || combMode == 1 || combMode == 2);
     if (combMode == 0)
-        feedforwardCombOut(buffer);
+        return feedforwardCombOut(currentSample);
     else if (combMode == 1)
-        feedbackCombOut(buffer);
+        return feedbackCombOut(currentSample);
     else if (combMode == 2)
-        LPFCombOut(buffer);
+        return LPFCombOut(currentSample);
+
+    //TODO: review this function
+    else
+        return currentSample;
 }
 
 // FEEDFORWARD
-void Comb::feedforwardCombOut(juce::AudioBuffer<float>& buffer)
+float Comb::feedforwardCombOut(float currentSample)
 {
-    for (int channel = 0; channel < buffer.getNumChannels(); ++channel)
-    {
-        auto writeSignal = buffer.getWritePointer(channel);
+    const float inputSample = currentSample;
+    delayIn = inputSample;
+    delayOut = delay.readPos() * combGain;
+    delay.writeSample(&delayIn); // write sample to buffer, then update read pos
+    float feedforwardCombOut = (delayIn * feedforwardGain) + delayOut;
 
-        for (int sample = 0; sample < buffer.getNumSamples(); ++sample)
-        {
-            const float inputSample = writeSignal[sample];
-            delayIn = inputSample;
-            delayOut = delay.readPos() * combGain;
-            delay.writeSample(&delayIn); // write sample to buffer, then update read pos
-            const float feedforwardCombOut = (delayIn * feedforwardGain) + delayOut;
+    return feedforwardCombOut; // copy allpass output to buffer
 
-            writeSignal[sample] = feedforwardCombOut; // copy allpass output to buffer
-        }
-    }
 }
 
 // FEEDBACK
-void Comb::feedbackCombOut(juce::AudioBuffer<float>& buffer)
+float Comb::feedbackCombOut(float currentSample)
 {
-    for (int channel = 0; channel < buffer.getNumChannels(); ++channel)
-    {
-        auto writeSignal = buffer.getWritePointer(channel);
+    const float inputSample = currentSample;
+    delayOut = delay.readPos() * -combGain;
+    delayIn = (inputSample * combGain) + delayOut;
+    delay.writeSample(&delayIn); // write sample to buffer, then update read pos
+    float feedbackCombOut = delayIn;
 
-        for (int sample = 0; sample < buffer.getNumSamples(); ++sample)
-        {
-            const float inputSample = writeSignal[sample];
-            delayOut = delay.readPos() * -combGain;
-            delayIn = (inputSample * combGain) + delayOut;
-            delay.writeSample(&delayIn); // write sample to buffer, then update read pos
-            const float feedbackCombOut = delayIn;
+    return feedbackCombOut; // copy allpass output to buffer
 
-            writeSignal[sample] = feedbackCombOut; // copy allpass output to buffer
-        }
-    }
 }
 
-//TODO: Low Pass Comb Filter: https://dsp.stackexchange.com/questions/60774/understanding-a-lowpass-comb-filter-implementation
+//TODO: implement Low Pass Comb Filter: https://dsp.stackexchange.com/questions/60774/understanding-a-lowpass-comb-filter-implementation
 // LPF
-void Comb::LPFCombOut(juce::AudioBuffer<float>& buffer)
+float Comb::LPFCombOut(float currentSample)
 {
-
+    return currentSample;
 }

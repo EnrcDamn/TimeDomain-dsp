@@ -21,13 +21,13 @@ public:
 
     void prepareToPlay(float dTimeMs, float gain, float sampleRate, int mode);
 
-    void process(juce::AudioBuffer<float>&);
+    float process(float);
 
-    void feedforwardCombOut(juce::AudioBuffer<float>&);
+    float feedforwardCombOut(float);
 
-    void feedbackCombOut(juce::AudioBuffer<float>&);
+    float feedbackCombOut(float);
 
-    void LPFCombOut(juce::AudioBuffer<float>&);
+    float LPFCombOut(float);
 
 private:
     int combMode;

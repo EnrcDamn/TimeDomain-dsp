@@ -98,7 +98,8 @@ void TimeDomainTestingAudioProcessor::prepareToPlay (double sampleRate, int samp
 
     for (int i = 0; i < cSize; ++i)
         combs[i].prepareToPlay(200.0f, 0.7, static_cast<float>(sampleRate), 1);*/
-    ap.prepareToPlay(45.0f, 0.7, static_cast<float>(sampleRate));
+    ap.prepareToPlay(200.0f, 0.7, static_cast<float>(sampleRate));
+    c.prepareToPlay(100.0f, 0.7, static_cast<float>(sampleRate), 1);
 }
 
 void TimeDomainTestingAudioProcessor::releaseResources()
@@ -158,7 +159,25 @@ void TimeDomainTestingAudioProcessor::processBlock (juce::AudioBuffer<float>& bu
     mm.mix(&combs);*/
 
 
-    ap.process(buffer);
+    processEffectChain(buffer);
+}
+
+// Dumb processing function for effect chain
+void TimeDomainTestingAudioProcessor::processEffectChain(juce::AudioBuffer<float>& buffer)
+{
+    for (int channel = 0; channel < buffer.getNumChannels(); ++channel)
+    {
+        auto writeSignal = buffer.getWritePointer(channel);
+
+        for (int sample = 0; sample < buffer.getNumSamples(); ++sample)
+        {
+            auto inputSample = writeSignal[sample];
+
+            auto firstUnit = ap.process(inputSample);
+            auto lastUnit = c.process(firstUnit);
+            writeSignal[sample] = lastUnit;
+        }
+    }
 }
 
 //==============================================================================

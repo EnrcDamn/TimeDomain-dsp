@@ -31,22 +31,14 @@ void AllPass::prepareToPlay(float dTimeMs, float gain, float sampleRate)
     initDelayLine(dTimeMs, sampleRate);
 }
 
-void AllPass::process(juce::AudioBuffer<float>& buffer)
+float AllPass::process(float currentSample)
 {
     // TODO: fix function, put buffer loop outside and add return value (sample)
-    for (int channel = 0; channel < buffer.getNumChannels(); ++channel)
-    {
-        auto writeSignal = buffer.getWritePointer(channel);
+    const float inputSample = currentSample;
+    delayOut = delay.readPos(); // read current position (first time from empty delay buffer)
+    delayIn = inputSample + (delayOut * allPassGain);
+    delay.writeSample(&delayIn); // write signals sum to buffer, then update read pos
+    float allPassOut = (delayIn + delayOut) * -allPassGain;
 
-        for (int sample = 0; sample < buffer.getNumSamples(); ++sample)
-        {
-            const float inputSample = writeSignal[sample];
-            delayOut = delay.readPos(); // read current position (first time from empty delay buffer)
-            delayIn = inputSample + (delayOut * allPassGain);
-            delay.writeSample(&delayIn); // write sample to buffer, then update read pos
-            const float allPassOut = (delayIn + delayOut) * -allPassGain;
-
-            writeSignal[sample] = allPassOut; // copy allpass output to buffer
-        }
-    }
+    return allPassOut; // copy allpass output to buffer
 }

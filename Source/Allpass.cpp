@@ -38,7 +38,7 @@ float AllPass::process(float currentSample)
     delayOut = delay.readPos(); // read current position (first time from empty delay buffer)
     delayIn = inputSample + (delayOut * allPassGain);
     delay.writeSample(&delayIn); // write signals sum to buffer, then update read pos
-    float allPassOut = (delayIn + delayOut) * -allPassGain;
+    float allPassOut = (delayIn * -allPassGain) + delayOut;
 
     return allPassOut; // copy allpass output to buffer
 }

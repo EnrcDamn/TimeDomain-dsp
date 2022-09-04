@@ -93,14 +93,15 @@ void TimeDomainTestingAudioProcessor::changeProgramName (int index, const juce::
 //==============================================================================
 void TimeDomainTestingAudioProcessor::prepareToPlay (double sampleRate, int samplesPerBlock)
 {
-    for (int i = 0; i < apSize; ++i)
-        allpasses[i].prepareToPlay(5.0f, 0.4, static_cast<float>(sampleRate));
+    allpasses[0].prepareToPlay(9.0f, 0.7, static_cast<float>(sampleRate));
+    allpasses[1].prepareToPlay(3.0f, 0.7, static_cast<float>(sampleRate));
+    allpasses[2].prepareToPlay(1.0f, 0.7, static_cast<float>(sampleRate));
 
     
-    combs[0].prepareToPlay(100.0f, 0.75, static_cast<float>(sampleRate), 1);
-    combs[1].prepareToPlay(220.0f, 0.74, static_cast<float>(sampleRate), 1);
-    combs[2].prepareToPlay(134.0f, 0.8, static_cast<float>(sampleRate), 1);
-    combs[3].prepareToPlay(162.0f, 0.7, static_cast<float>(sampleRate), 1);
+    combs[0].prepareToPlay(80.0f, 0.77, static_cast<float>(sampleRate), 1);
+    combs[1].prepareToPlay(80.0f, 0.8, static_cast<float>(sampleRate), 1);
+    combs[2].prepareToPlay(95.0f, 0.75, static_cast<float>(sampleRate), 1);
+    combs[3].prepareToPlay(100.0f, 0.73, static_cast<float>(sampleRate), 1);
     /*ap.prepareToPlay(200.0f, 0.5, static_cast<float>(sampleRate));
     c.prepareToPlay(100.0f, 0.5, static_cast<float>(sampleRate), 1);*/
 }
@@ -111,6 +112,7 @@ void TimeDomainTestingAudioProcessor::releaseResources()
     // spare memory, etc.
     delete[] allpasses;
     delete[] combs;
+    delete[] writeChannelSignal;
 }
 
 #ifndef JucePlugin_PreferredChannelConfigurations
@@ -170,16 +172,16 @@ void TimeDomainTestingAudioProcessor::processBlock (juce::AudioBuffer<float>& bu
 // Dumb processing function for effect chain
 void TimeDomainTestingAudioProcessor::processEffectChain(juce::AudioBuffer<float>& buffer)
 {
-    float** writeChannelSignal = new float*[buffer.getNumChannels()];
-    for (int i = 0; i < buffer.getNumChannels(); ++i)
-        writeChannelSignal[i] = buffer.getWritePointer(i);
+    writeChannelSignal = new float*[buffer.getNumChannels()];
+    for (int channel = 0; channel < buffer.getNumChannels(); ++channel)
+        writeChannelSignal[channel] = buffer.getWritePointer(channel);
 
     for (int sample = 0; sample < buffer.getNumSamples(); ++sample)
     {
         float inputSample = 0.0f;
         //auto inputSample = writeSignal[sample];
-        for (int i = 0; i < buffer.getNumChannels(); i++)
-            inputSample += writeChannelSignal[i][sample];
+        for (int channel = 0; channel < buffer.getNumChannels(); channel++)
+            inputSample += writeChannelSignal[channel][sample];
 
         for (int ap = 0; ap < apSize; ap++)
         {

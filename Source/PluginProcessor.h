@@ -69,6 +69,8 @@ private:
     int cSize = 4;
     Comb* combs = new Comb[cSize];
     SimpleMixMatrix mm;
+
+    float** writeChannelSignal;
     /*AllPass ap;
     Comb c;*/
 

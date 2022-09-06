@@ -112,7 +112,6 @@ void TimeDomainTestingAudioProcessor::releaseResources()
     // spare memory, etc.
     delete[] allpasses;
     delete[] combs;
-    delete[] writeChannelSignal;
 }
 
 #ifndef JucePlugin_PreferredChannelConfigurations
@@ -156,32 +155,24 @@ void TimeDomainTestingAudioProcessor::processBlock (juce::AudioBuffer<float>& bu
     for (auto i = totalNumInputChannels; i < totalNumOutputChannels; ++i)
         buffer.clear (i, 0, buffer.getNumSamples());
 
-    // SCHROEDER REV
-    /*for (int i = 0; i < apSize; ++i)
-        allpasses[i].process(buffer);
-
-    for (int i = 0; i < cSize; ++i)
-        combs[i].process(buffer);
-
-    mm.mix(&combs);*/
-
-
     processEffectChain(buffer);
 }
 
 // Dumb processing function for effect chain
 void TimeDomainTestingAudioProcessor::processEffectChain(juce::AudioBuffer<float>& buffer)
 {
-    writeChannelSignal = new float*[buffer.getNumChannels()];
-    for (int channel = 0; channel < buffer.getNumChannels(); ++channel)
-        writeChannelSignal[channel] = buffer.getWritePointer(channel);
+    //TODO: work input as mono
+    // add the right (1) to the left (0)
+    buffer.addFrom(0, 0, buffer, 1, 0, buffer.getNumSamples());
+    // copy the combined left (0) to the right (1)
+    buffer.copyFrom(1, 0, buffer, 0, 0, buffer.getNumSamples());
+
+    auto writeSignalMono = buffer.getWritePointer(0);
+    auto writeSignalStereo = buffer.getWritePointer(1);
 
     for (int sample = 0; sample < buffer.getNumSamples(); ++sample)
     {
-        float inputSample = 0.0f;
-        //auto inputSample = writeSignal[sample];
-        for (int channel = 0; channel < buffer.getNumChannels(); channel++)
-            inputSample += writeChannelSignal[channel][sample];
+        float inputSample = writeSignalMono[sample];
 
         for (int ap = 0; ap < apSize; ap++)
         {
@@ -196,10 +187,9 @@ void TimeDomainTestingAudioProcessor::processEffectChain(juce::AudioBuffer<float
 
         auto mixed = mm.mix(combSection);
 
-        writeChannelSignal[0][sample] = mixed.first;
-        writeChannelSignal[1][sample] = mixed.second;
+        writeSignalMono[sample] = mixed.first;
+        writeSignalStereo[sample] = mixed.second;
     }
-    
 }
 
 //==============================================================================

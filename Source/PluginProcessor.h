@@ -37,6 +37,7 @@ public:
     void processBlock (juce::AudioBuffer<float>&, juce::MidiBuffer&) override;
 
     void processEffectChain(juce::AudioBuffer<float>&);
+    void processAP(juce::AudioBuffer<float>&);
 
     //==============================================================================
     juce::AudioProcessorEditor* createEditor() override;
@@ -71,8 +72,8 @@ private:
     SimpleMixMatrix mm;
 
     float** writeChannelSignal;
-    /*AllPass ap;
-    Comb c;*/
+    AllPass ap;
+    Comb c;
 
     //==============================================================================
     JUCE_DECLARE_NON_COPYABLE_WITH_LEAK_DETECTOR (TimeDomainTestingAudioProcessor)

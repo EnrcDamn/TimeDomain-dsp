@@ -26,6 +26,8 @@ TimeDomainTestingAudioProcessor::TimeDomainTestingAudioProcessor()
 
 TimeDomainTestingAudioProcessor::~TimeDomainTestingAudioProcessor()
 {
+    delete[] allpasses;
+    delete[] combs;
 }
 
 //==============================================================================
@@ -102,16 +104,15 @@ void TimeDomainTestingAudioProcessor::prepareToPlay (double sampleRate, int samp
     combs[1].prepareToPlay(80.0f, 0.8, static_cast<float>(sampleRate), 1);
     combs[2].prepareToPlay(95.0f, 0.75, static_cast<float>(sampleRate), 1);
     combs[3].prepareToPlay(100.0f, 0.73, static_cast<float>(sampleRate), 1);
-    /*ap.prepareToPlay(200.0f, 0.5, static_cast<float>(sampleRate));
-    c.prepareToPlay(100.0f, 0.5, static_cast<float>(sampleRate), 1);*/
+
+    ap.prepareToPlay(200.0f, 0.5, static_cast<float>(sampleRate));
+    c.prepareToPlay(100.0f, 0.5, static_cast<float>(sampleRate), 1);
 }
 
 void TimeDomainTestingAudioProcessor::releaseResources()
 {
     // When playback stops, you can use this as an opportunity to free up any
     // spare memory, etc.
-    delete[] allpasses;
-    delete[] combs;
 }
 
 #ifndef JucePlugin_PreferredChannelConfigurations
@@ -146,25 +147,20 @@ void TimeDomainTestingAudioProcessor::processBlock (juce::AudioBuffer<float>& bu
     auto totalNumInputChannels  = getTotalNumInputChannels();
     auto totalNumOutputChannels = getTotalNumOutputChannels();
 
-    // In case we have more outputs than inputs, this code clears any output
-    // channels that didn't contain input data, (because these aren't
-    // guaranteed to be empty - they may contain garbage).
-    // This is here to avoid people getting screaming feedback
-    // when they first compile a plugin, but obviously you don't need to keep
-    // this code if your algorithm always overwrites all the output channels.
     for (auto i = totalNumInputChannels; i < totalNumOutputChannels; ++i)
         buffer.clear (i, 0, buffer.getNumSamples());
 
     processEffectChain(buffer);
+    
 }
 
 // Dumb processing function for effect chain
 void TimeDomainTestingAudioProcessor::processEffectChain(juce::AudioBuffer<float>& buffer)
 {
-    //TODO: work input as mono
+    
     // add the right (1) to the left (0)
     buffer.addFrom(0, 0, buffer, 1, 0, buffer.getNumSamples());
-    // copy the combined left (0) to the right (1)
+    // then copy the combined left (0) to the right (1)
     buffer.copyFrom(1, 0, buffer, 0, 0, buffer.getNumSamples());
 
     auto writeSignalMono = buffer.getWritePointer(0);
@@ -172,6 +168,8 @@ void TimeDomainTestingAudioProcessor::processEffectChain(juce::AudioBuffer<float
 
     for (int sample = 0; sample < buffer.getNumSamples(); ++sample)
     {
+        //DBG("Input L: " << juce::String(writeSignalMono[sample]));
+        //DBG("Input R: " << juce::String(writeSignalStereo[sample]));
         float inputSample = writeSignalMono[sample];
 
         for (int ap = 0; ap < apSize; ap++)
@@ -189,6 +187,25 @@ void TimeDomainTestingAudioProcessor::processEffectChain(juce::AudioBuffer<float
 
         writeSignalMono[sample] = mixed.first;
         writeSignalStereo[sample] = mixed.second;
+
+        //DBG("Output L: " << juce::String(writeSignalMono[sample]));
+        //DBG("Output R: " << juce::String(writeSignalStereo[sample]));
+    }
+}
+
+void TimeDomainTestingAudioProcessor::processAP(juce::AudioBuffer<float>& buffer)
+{
+    for (int channel = 0; channel < buffer.getNumChannels(); ++channel)
+    {
+        auto writeSignal = buffer.getWritePointer(channel);
+
+        for (int sample = 0; sample < buffer.getNumSamples(); ++sample)
+        {
+            float inputSample = writeSignal[sample];
+
+            auto out = ap.process(inputSample);
+            writeSignal[sample] = out;
+        }
     }
 }
 

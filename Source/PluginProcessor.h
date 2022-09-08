@@ -9,9 +9,7 @@
 #pragma once
 
 #include <JuceHeader.h>
-#include "Allpass.h"
-#include "Comb.h"
-#include "MixMatrix.h"
+#include "SchroederReverb.h"
 
 //==============================================================================
 /**
@@ -35,9 +33,6 @@ public:
    #endif
 
     void processBlock (juce::AudioBuffer<float>&, juce::MidiBuffer&) override;
-
-    void processEffectChain(juce::AudioBuffer<float>&);
-    void processAP(juce::AudioBuffer<float>&);
 
     //==============================================================================
     juce::AudioProcessorEditor* createEditor() override;
@@ -63,17 +58,7 @@ public:
     void setStateInformation (const void* data, int sizeInBytes) override;
 
 private:
-
-    // TODO: replace all new operators with std::vector (std::array?)
-    int apSize = 3;
-    AllPass* allpasses = new AllPass[apSize];
-    int cSize = 4;
-    Comb* combs = new Comb[cSize];
-    SimpleMixMatrix mm;
-
-    float** writeChannelSignal;
-    AllPass ap;
-    Comb c;
+    SchroederReverb schroeder;
 
     //==============================================================================
     JUCE_DECLARE_NON_COPYABLE_WITH_LEAK_DETECTOR (TimeDomainTestingAudioProcessor)

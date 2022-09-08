@@ -26,8 +26,7 @@ TimeDomainTestingAudioProcessor::TimeDomainTestingAudioProcessor()
 
 TimeDomainTestingAudioProcessor::~TimeDomainTestingAudioProcessor()
 {
-    delete[] allpasses;
-    delete[] combs;
+
 }
 
 //==============================================================================
@@ -95,18 +94,7 @@ void TimeDomainTestingAudioProcessor::changeProgramName (int index, const juce::
 //==============================================================================
 void TimeDomainTestingAudioProcessor::prepareToPlay (double sampleRate, int samplesPerBlock)
 {
-    allpasses[0].prepareToPlay(9.0f, 0.7, static_cast<float>(sampleRate));
-    allpasses[1].prepareToPlay(3.0f, 0.7, static_cast<float>(sampleRate));
-    allpasses[2].prepareToPlay(1.0f, 0.7, static_cast<float>(sampleRate));
-
-    
-    combs[0].prepareToPlay(80.0f, 0.77, static_cast<float>(sampleRate), 1);
-    combs[1].prepareToPlay(80.0f, 0.8, static_cast<float>(sampleRate), 1);
-    combs[2].prepareToPlay(95.0f, 0.75, static_cast<float>(sampleRate), 1);
-    combs[3].prepareToPlay(100.0f, 0.73, static_cast<float>(sampleRate), 1);
-
-    ap.prepareToPlay(200.0f, 0.5, static_cast<float>(sampleRate));
-    c.prepareToPlay(100.0f, 0.5, static_cast<float>(sampleRate), 1);
+    schroeder.prepareToPlay(static_cast<float>(sampleRate));
 }
 
 void TimeDomainTestingAudioProcessor::releaseResources()
@@ -150,63 +138,8 @@ void TimeDomainTestingAudioProcessor::processBlock (juce::AudioBuffer<float>& bu
     for (auto i = totalNumInputChannels; i < totalNumOutputChannels; ++i)
         buffer.clear (i, 0, buffer.getNumSamples());
 
-    processEffectChain(buffer);
+    schroeder.process(buffer);
     
-}
-
-// Dumb processing function for effect chain
-void TimeDomainTestingAudioProcessor::processEffectChain(juce::AudioBuffer<float>& buffer)
-{
-    
-    // add the right (1) to the left (0)
-    buffer.addFrom(0, 0, buffer, 1, 0, buffer.getNumSamples());
-    // then copy the combined left (0) to the right (1)
-    buffer.copyFrom(1, 0, buffer, 0, 0, buffer.getNumSamples());
-
-    auto writeSignalMono = buffer.getWritePointer(0);
-    auto writeSignalStereo = buffer.getWritePointer(1);
-
-    for (int sample = 0; sample < buffer.getNumSamples(); ++sample)
-    {
-        //DBG("Input L: " << juce::String(writeSignalMono[sample]));
-        //DBG("Input R: " << juce::String(writeSignalStereo[sample]));
-        float inputSample = writeSignalMono[sample];
-
-        for (int ap = 0; ap < apSize; ap++)
-        {
-            inputSample = allpasses[ap].process(inputSample);
-        }
-
-        float combSection[4];
-        for (int c = 0; c < cSize; c++)
-        {
-            combSection[c] = combs[c].process(inputSample);
-        }
-
-        auto mixed = mm.mix(combSection);
-
-        writeSignalMono[sample] = mixed.first;
-        writeSignalStereo[sample] = mixed.second;
-
-        //DBG("Output L: " << juce::String(writeSignalMono[sample]));
-        //DBG("Output R: " << juce::String(writeSignalStereo[sample]));
-    }
-}
-
-void TimeDomainTestingAudioProcessor::processAP(juce::AudioBuffer<float>& buffer)
-{
-    for (int channel = 0; channel < buffer.getNumChannels(); ++channel)
-    {
-        auto writeSignal = buffer.getWritePointer(channel);
-
-        for (int sample = 0; sample < buffer.getNumSamples(); ++sample)
-        {
-            float inputSample = writeSignal[sample];
-
-            auto out = ap.process(inputSample);
-            writeSignal[sample] = out;
-        }
-    }
 }
 
 //==============================================================================

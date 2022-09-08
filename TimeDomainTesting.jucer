@@ -5,6 +5,10 @@
               jucerFormatVersion="1">
   <MAINGROUP id="CTeIp4" name="TimeDomainTesting">
     <GROUP id="{BEF8ED40-8C52-105D-6EAF-6CB5B2B17F43}" name="Source">
+      <FILE id="lW1Wk8" name="SchroederReverb.cpp" compile="1" resource="0"
+            file="Source/SchroederReverb.cpp"/>
+      <FILE id="xy0zAA" name="SchroederReverb.h" compile="0" resource="0"
+            file="Source/SchroederReverb.h"/>
       <FILE id="mEyrwC" name="MixMatrix.cpp" compile="1" resource="0" file="Source/MixMatrix.cpp"/>
       <FILE id="um7kiZ" name="MixMatrix.h" compile="0" resource="0" file="Source/MixMatrix.h"/>
       <FILE id="kt24nQ" name="Comb.cpp" compile="1" resource="0" file="Source/Comb.cpp"/>

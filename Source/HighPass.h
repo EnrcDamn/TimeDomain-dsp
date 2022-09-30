@@ -9,3 +9,19 @@
 */
 
 #pragma once
+#include <JuceHeader.h>
+#include "AllPass.h"
+#include <vector>
+
+class HighPass
+{
+public:
+    void prepareToPlay(float sampleRate);
+    void setCutoffFrequency(float cutoffFrequency);
+    void process(juce::AudioBuffer<float>&);
+
+private:
+    float cutoffFrequency;
+    float sampleRate;
+    AllPass allpass;
+};

@@ -9,3 +9,12 @@
 */
 
 #pragma once
+#include <JuceHeader.h>
+
+class LowPass
+{
+public:
+
+
+private:
+};

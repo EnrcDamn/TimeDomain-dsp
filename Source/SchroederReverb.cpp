@@ -3,7 +3,7 @@
 
     SchroederReverb.cpp
     Created: 8 Sep 2022 3:38:00pm
-    Author:  enric
+    Author:  Enrico Damiani
 
   ==============================================================================
 */

@@ -3,7 +3,7 @@
 
     MixMatrix.cpp
     Created: 2 Sep 2022 12:06:49pm
-    Author:  enric
+    Author:  Enrico Damiani
 
   ==============================================================================
 */

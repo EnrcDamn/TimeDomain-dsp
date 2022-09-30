@@ -3,7 +3,7 @@
 
     MixMatrix.h
     Created: 2 Sep 2022 12:06:48pm
-    Author:  enric
+    Author:  Enrico Damiani
 
   ==============================================================================
 */

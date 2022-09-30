@@ -18,13 +18,13 @@ public:
     AllPass();
     ~AllPass();
 
-    void initDelayLine(float dTimeMs, float sampleRate);
-
     void prepareToPlay(float dTimeMs, float gain, float sampleRate);
 
     float process(float);
 
 private:
+    void initDelayLine(float dTimeMs, float sampleRate);
+
     float allPassGain;
     float delayTime;
 

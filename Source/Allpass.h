@@ -20,13 +20,16 @@ public:
 
     void prepareToPlay(float dTimeMs, float gain, float sampleRate);
 
+    float setGainCoefficient(float breakFrequency);
+
     float process(float);
 
 private:
     void initDelayLine(float dTimeMs, float sampleRate);
 
-    float allPassGain;
+    float sampleRate;
     float delayTime;
+    float gain;
 
     float delayIn;
     DelayLine delay;

@@ -10,10 +10,15 @@
 
 #include "HighPass.h"
 
+// LP - HP filter from Allpass: https://thewolfsound.com/allpass-based-lowpass-and-highpass-filters/
+
 void HighPass::prepareToPlay(float sampleRate)
 {
     this->sampleRate = sampleRate;
-    allpass.prepareToPlay(0.0f, 1.0, sampleRate);
+    allpass.prepareToPlay(0.0f, 
+                          allpass.setGainCoefficient(cutoffFrequency), 
+                          sampleRate
+                         );
 }
 
 void HighPass::setCutoffFrequency(float cutoffFrequency)
@@ -23,11 +28,6 @@ void HighPass::setCutoffFrequency(float cutoffFrequency)
 
 void HighPass::process(juce::AudioBuffer<float>& buffer)
 {
-    float PI = juce::MathConstants<float>::pi;
-
-    auto tan = std::tan(PI * cutoffFrequency / sampleRate);
-    auto a1 = (tan - 1.f) / (tan + 1.f);
-
     for (int channel = 0; channel < buffer.getNumChannels(); ++channel)
     {
         auto writeSignal = buffer.getWritePointer(channel);

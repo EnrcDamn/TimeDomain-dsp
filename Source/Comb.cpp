@@ -25,21 +25,21 @@ void Comb::initDelayLine(float dTimeMs, float sampleRate)
     delay.prepareToPlay(dTimeMs, sampleRate);
 }
 
-void Comb::prepareToPlay(float dTimeMs, float gain, float sampleRate, int mode)
+void Comb::prepareToPlay(float dTimeMs, float gain, float sampleRate, int mode = 1)
 {
-    combGain = gain;
+    this->gain = gain;
     initDelayLine(dTimeMs, sampleRate);
-    combMode = mode;
+    this->mode = mode;
 }
 
 float Comb::process(float currentSample)
 {
-    jassert(combMode == 0 || combMode == 1 || combMode == 2);
-    if (combMode == 0)
+    jassert(mode == 0 || mode == 1 || mode == 2);
+    if (mode == 0)
         return feedforwardCombOut(currentSample);
-    else if (combMode == 1)
+    else if (mode == 1)
         return feedbackCombOut(currentSample);
-    else if (combMode == 2)
+    else if (mode == 2)
         return LPFCombOut(currentSample);
 
     //TODO: review this function
@@ -51,7 +51,7 @@ float Comb::feedforwardCombOut(float currentSample)
 {
     const float inputSample = currentSample;
     delayIn = inputSample;
-    delayOut = delay.readPos() * combGain;
+    delayOut = delay.readPos() * gain;
     delay.writeSample(&delayIn); // write sample to buffer, then update read pos
     float feedforwardCombOut = (delayIn * feedforwardGain) + delayOut;
 
@@ -63,8 +63,8 @@ float Comb::feedforwardCombOut(float currentSample)
 float Comb::feedbackCombOut(float currentSample)
 {
     const float inputSample = currentSample;
-    delayOut = delay.readPos() * -combGain;
-    delayIn = (inputSample * combGain) + delayOut;
+    delayOut = delay.readPos() * -gain;
+    delayIn = (inputSample * gain) + delayOut;
     delay.writeSample(&delayIn); // write sample to buffer, then update read pos
     float feedbackCombOut = delayIn;
 

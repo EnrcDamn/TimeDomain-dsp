@@ -9,7 +9,7 @@
 #pragma once
 
 #include <JuceHeader.h>
-#include "SchroederReverb.h"
+#include "FirstOrderFilter.h"
 
 //==============================================================================
 /**
@@ -58,7 +58,9 @@ public:
     void setStateInformation (const void* data, int sizeInBytes) override;
 
 private:
-    SchroederReverb schroeder;
+    juce::AudioProcessorValueTreeState treeState;
+    std::atomic<float>* cutoffFrequencyParam = nullptr;
+    LowPass lpf;
 
     //==============================================================================
     JUCE_DECLARE_NON_COPYABLE_WITH_LEAK_DETECTOR (TimeDomainTestingAudioProcessor)

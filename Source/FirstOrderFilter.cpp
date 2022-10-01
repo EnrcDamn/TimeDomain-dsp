@@ -1,18 +1,18 @@
 /*
   ==============================================================================
 
-    HighPass.cpp
+    FirstOrderFilter.cpp
     Created: 30 Sep 2022 6:36:07pm
     Author:  Enrico Damiani
 
   ==============================================================================
 */
 
-#include "HighPass.h"
+#include "FirstOrderFilter.h"
 
 // LP - HP filter from Allpass: https://thewolfsound.com/allpass-based-lowpass-and-highpass-filters/
 
-void HighPass::prepareToPlay(float sampleRate)
+void FirstOrderFilter::prepareToPlay(float sampleRate)
 {
     this->sampleRate = sampleRate;
     allpass.prepareToPlay(0.0f, 
@@ -21,12 +21,12 @@ void HighPass::prepareToPlay(float sampleRate)
                          );
 }
 
-void HighPass::setCutoffFrequency(float cutoffFrequency)
+void FirstOrderFilter::setCutoffFrequency(float cutoffFrequency)
 {
     this->cutoffFrequency = cutoffFrequency;
 }
 
-void HighPass::process(juce::AudioBuffer<float>& buffer)
+void FirstOrderFilter::process(juce::AudioBuffer<float>& buffer)
 {
     for (int channel = 0; channel < buffer.getNumChannels(); ++channel)
     {

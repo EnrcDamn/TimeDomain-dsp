@@ -23,6 +23,7 @@ DelayLine::~DelayLine()
 void DelayLine::prepareToPlay(float dTimeMs, float sampleRate)
 {
     delayTime = static_cast<int>(dTimeMs * sampleRate) / 1000;
+    if (delayTime <= 0) delayTime = 1;
     delayBuffer = new float[delayTime] {0.0f};
 }
 

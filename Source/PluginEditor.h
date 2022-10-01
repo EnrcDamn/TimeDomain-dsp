@@ -17,7 +17,7 @@
 class TimeDomainTestingAudioProcessorEditor  : public juce::AudioProcessorEditor
 {
 public:
-    TimeDomainTestingAudioProcessorEditor (TimeDomainTestingAudioProcessor&);
+    TimeDomainTestingAudioProcessorEditor (TimeDomainTestingAudioProcessor&, juce::AudioProcessorValueTreeState&);
     ~TimeDomainTestingAudioProcessorEditor() override;
 
     //==============================================================================
@@ -28,6 +28,11 @@ private:
     // This reference is provided as a quick way for your editor to
     // access the processor object that created it.
     TimeDomainTestingAudioProcessor& audioProcessor;
+
+    juce::Slider cutoffFrequencySlider;
+    std::unique_ptr<juce::AudioProcessorValueTreeState::SliderAttachment>
+        cutoffFrequencyAttachment;
+    juce::Label cutoffFrequencyLabel;
 
     JUCE_DECLARE_NON_COPYABLE_WITH_LEAK_DETECTOR (TimeDomainTestingAudioProcessorEditor)
 };

@@ -19,20 +19,20 @@ TimeDomainTestingAudioProcessor::TimeDomainTestingAudioProcessor()
                       #endif
                        .withOutput ("Output", juce::AudioChannelSet::stereo(), true)
                      #endif
-                       ),
-#else
-    :
+                       )
+    ,
+    treeState(*this,
+        nullptr,
+        juce::Identifier("Filter"),
+        {
+        std::make_unique<juce::AudioParameterFloat>("frequency",
+                                                    "Frequency",
+                                                    juce::NormalisableRange<float>(20.f, 20000.f, 0.1f, 0.2f),
+                                                    500.f)
+        }
+    )
 #endif
-treeState(*this, 
-          nullptr,
-          juce::Identifier("Filter"),
-              {
-              std::make_unique<juce::AudioParameterFloat>("frequency", 
-                                                          "Frequency",
-                                                          juce::NormalisableRange<float>(20.f, 20000.f, 0.1f, 0.2f),
-                                                          500.f)
-              }
-         )
+
 {
     cutoffFrequencyParam = treeState.getRawParameterValue("frequency");
 }

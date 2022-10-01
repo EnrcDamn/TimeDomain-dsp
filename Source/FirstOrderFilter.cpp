@@ -15,7 +15,7 @@
 void FirstOrderFilter::prepareToPlay(float sampleRate)
 {
     this->sampleRate = sampleRate;
-    allpass.prepareToPlay(0.0f, 
+    allpass.prepareToPlay(0.f, 
                           allpass.setGainCoefficient(cutoffFrequency), 
                           sampleRate
                          );
@@ -37,7 +37,7 @@ void FirstOrderFilter::process(juce::AudioBuffer<float>& buffer)
             auto inputSample = writeSignal[sample];
             auto allpassFilteredSample = allpass.process(inputSample);
             
-            auto filterOutput = 0.5 * (inputSample + allpassFilteredSample * -1.f);
+            auto filterOutput = 0.5 * (inputSample + allpassFilteredSample * sign);
 
             writeSignal[sample] = filterOutput;
         }

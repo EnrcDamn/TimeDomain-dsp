@@ -10,12 +10,21 @@
 #include "PluginEditor.h"
 
 //==============================================================================
-TimeDomainTestingAudioProcessorEditor::TimeDomainTestingAudioProcessorEditor (TimeDomainTestingAudioProcessor& p)
+TimeDomainTestingAudioProcessorEditor::TimeDomainTestingAudioProcessorEditor 
+(TimeDomainTestingAudioProcessor& p, juce::AudioProcessorValueTreeState& apvts)
     : AudioProcessorEditor (&p), audioProcessor (p)
 {
-    // Make sure that before the constructor has finished, you've set the
-    // editor's size to whatever you need it to be.
-    setSize (400, 300);
+    setSize(400, 300);
+
+    addAndMakeVisible(cutoffFrequencySlider);
+    cutoffFrequencySlider.setSliderStyle(juce::Slider::SliderStyle::Rotary);
+    cutoffFrequencySlider.setTextBoxStyle(juce::Slider::TextBoxBelow, true, 100, 25);
+    cutoffFrequencyAttachment.reset(
+        new juce::AudioProcessorValueTreeState::SliderAttachment(
+            apvts, "frequency", cutoffFrequencySlider));
+
+    addAndMakeVisible(cutoffFrequencyLabel);
+    cutoffFrequencyLabel.setText("Cutoff Frequency", juce::dontSendNotification);
 }
 
 TimeDomainTestingAudioProcessorEditor::~TimeDomainTestingAudioProcessorEditor()
@@ -30,11 +39,9 @@ void TimeDomainTestingAudioProcessorEditor::paint (juce::Graphics& g)
 
     g.setColour (juce::Colours::white);
     g.setFont (15.0f);
-    g.drawFittedText ("Schroeder Reverb test 111", getLocalBounds(), juce::Justification::centred, 1);
 }
 
 void TimeDomainTestingAudioProcessorEditor::resized()
 {
-    // This is generally where you'll want to lay out the positions of any
-    // subcomponents in your editor..
+    cutoffFrequencySlider.setBounds(getLocalBounds());
 }

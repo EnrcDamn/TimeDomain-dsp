@@ -30,8 +30,8 @@ public:
     float LPFCombOut(float);
 
 private:
-    int combMode;
-    float combGain;
+    int mode;
+    float gain;
     float delayTime;
 
     float delayIn;

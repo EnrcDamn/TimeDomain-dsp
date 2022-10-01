@@ -19,9 +19,22 @@ TimeDomainTestingAudioProcessor::TimeDomainTestingAudioProcessor()
                       #endif
                        .withOutput ("Output", juce::AudioChannelSet::stereo(), true)
                      #endif
-                       )
+                       ),
+#else
+    :
 #endif
+treeState(*this, 
+          nullptr,
+          juce::Identifier("Filter"),
+              {
+              std::make_unique<juce::AudioParameterFloat>("frequency", 
+                                                          "Frequency",
+                                                          juce::NormalisableRange<float>(20.f, 20000.f, 0.1f, 0.2f),
+                                                          500.f)
+              }
+         )
 {
+    cutoffFrequencyParam = treeState.getRawParameterValue("frequency");
 }
 
 TimeDomainTestingAudioProcessor::~TimeDomainTestingAudioProcessor()
@@ -94,7 +107,7 @@ void TimeDomainTestingAudioProcessor::changeProgramName (int index, const juce::
 //==============================================================================
 void TimeDomainTestingAudioProcessor::prepareToPlay (double sampleRate, int samplesPerBlock)
 {
-    schroeder.prepareToPlay(static_cast<float>(sampleRate));
+    lpf.prepareToPlay(static_cast<float>(sampleRate));
 }
 
 void TimeDomainTestingAudioProcessor::releaseResources()
@@ -138,8 +151,11 @@ void TimeDomainTestingAudioProcessor::processBlock (juce::AudioBuffer<float>& bu
     for (auto i = totalNumInputChannels; i < totalNumOutputChannels; ++i)
         buffer.clear (i, 0, buffer.getNumSamples());
 
-    schroeder.process(buffer);
-    
+    const auto cutoffFrequency = cutoffFrequencyParam->load();
+
+    lpf.setCutoffFrequency(cutoffFrequency);
+
+    lpf.process(buffer);
 }
 
 //==============================================================================
@@ -150,7 +166,7 @@ bool TimeDomainTestingAudioProcessor::hasEditor() const
 
 juce::AudioProcessorEditor* TimeDomainTestingAudioProcessor::createEditor()
 {
-    return new TimeDomainTestingAudioProcessorEditor (*this);
+    return new TimeDomainTestingAudioProcessorEditor (*this, treeState);
 }
 
 //==============================================================================

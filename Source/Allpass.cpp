@@ -20,16 +20,16 @@ AllPass::~AllPass()
 
 }
 
-void AllPass::initDelayLine(float dTimeMs, float sampleRate)
+void AllPass::initDelayLine(float dTimeMs, float sampleRate, int totalNumInputChannels)
 {
-    delay.prepareToPlay(dTimeMs, sampleRate);
+    delay.prepareToPlay(dTimeMs, sampleRate, totalNumInputChannels);
 }
 
-void AllPass::prepareToPlay(float dTimeMs, float gain, float sampleRate)
+void AllPass::prepareToPlay(float dTimeMs, float gain, float sampleRate, int totalNumInputChannels)
 {
     this->gain = gain;
     this->sampleRate = sampleRate;
-    initDelayLine(dTimeMs, sampleRate);
+    initDelayLine(dTimeMs, sampleRate, totalNumInputChannels);
 }
 
 void AllPass::setGainCoefficient(float breakFrequency)
@@ -47,13 +47,13 @@ float AllPass::getGainCoefficient()
     return gain;
 }
 
-float AllPass::process(float currentSample)
+float AllPass::process(float currentSample, const int channel)
 {
     // TODO: fix function, put buffer loop outside and add return value (sample)
     const float inputSample = currentSample;
-    delayOut = delay.readPos(); // read current position (first time from empty delay buffer)
+    delayOut = delay.readPos(channel); // read current position (first time from empty delay buffer)
     delayIn = inputSample + (delayOut * -gain);
-    delay.writeSample(&delayIn); // write signals sum to buffer, then update read pos
+    delay.writeSample(&delayIn, channel); // write signals sum to buffer, then update read pos
     float allPassOut = (delayIn * gain) + delayOut;
 
     return allPassOut; // copy allpass output to buffer

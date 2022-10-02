@@ -15,7 +15,7 @@
 class FirstOrderFilter
 {
 public:
-    virtual void prepareToPlay(float sampleRate);
+    virtual void prepareToPlay(float sampleRate, int totalNumInputChannels);
 
     void setCutoffFrequency(float cutoffFrequency);
 
@@ -34,10 +34,10 @@ protected:
 class LowPass : public FirstOrderFilter
 {
 public:
-    void prepareToPlay(float sampleRate) override
+    void prepareToPlay(float sampleRate, int totalNumInputChannels) override
     {
         setSign();
-        FirstOrderFilter::prepareToPlay(sampleRate);
+        FirstOrderFilter::prepareToPlay(sampleRate, totalNumInputChannels);
     }
 private:
     void setSign() { this->sign = 1.0f; }
@@ -47,10 +47,10 @@ private:
 class HighPass : public FirstOrderFilter
 {
 public:
-    void prepareToPlay(float sampleRate) override
+    void prepareToPlay(float sampleRate, int totalNumInputChannels) override
     {
         setSign();
-        FirstOrderFilter::prepareToPlay(sampleRate);
+        FirstOrderFilter::prepareToPlay(sampleRate, totalNumInputChannels);
     }
 private:
     void setSign() { this->sign = -1.0f; }

@@ -20,7 +20,7 @@ public:
     SchroederReverb();
     ~SchroederReverb();
 
-    void prepareToPlay(float sampleRate);
+    void prepareToPlay(float sampleRate, int totalNumInputChannels);
     void process(juce::AudioBuffer<float>&);
 
 private:

@@ -17,16 +17,17 @@ public:
     DelayLine();
     ~DelayLine();
 
-    void prepareToPlay(float dTimeMs, float sampleRate);
+    void prepareToPlay(float dTimeMs, float sampleRate, int totalNumInputChannels);
 
     void releaseResources();
 
-    void writeSample(const float *currentSample);
+    void writeSample(const float *currentSample, const int channel);
 
-    float readPos();
+    float readPos(const int channel);
 
 private:
-    float* delayBuffer;
+    int totalNumInputChannels;
+    float** delayBuffer = nullptr;
     int readPosition = 0;
     int delayTime;
     float out;

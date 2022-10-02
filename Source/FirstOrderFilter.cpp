@@ -13,14 +13,14 @@
 // First Order LP - HP filter from AllPass: 
 // https://thewolfsound.com/allpass-based-lowpass-and-highpass-filters/
 
-void FirstOrderFilter::prepareToPlay(float sampleRate)
+void FirstOrderFilter::prepareToPlay(float sampleRate, int totalNumInputChannels)
 {
     this->sampleRate = sampleRate;
     allpass.setGainCoefficient(cutoffFrequency);
     allpass.prepareToPlay(0.f, 
                           allpass.getGainCoefficient(), 
-                          sampleRate
-                         );
+                          sampleRate,
+                          totalNumInputChannels);
 }
 
 void FirstOrderFilter::setCutoffFrequency(float cutoffFrequency)
@@ -38,7 +38,7 @@ void FirstOrderFilter::process(juce::AudioBuffer<float>& buffer)
         for (int sample = 0; sample < buffer.getNumSamples(); ++sample)
         {
             auto inputSample = writeSignal[sample];
-            auto allpassFilteredSample = allpass.process(inputSample);
+            auto allpassFilteredSample = allpass.process(inputSample, channel);
             
             auto filterOutput = 0.5f * (inputSample + allpassFilteredSample * sign);
 

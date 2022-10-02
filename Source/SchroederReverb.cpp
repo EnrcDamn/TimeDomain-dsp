@@ -21,16 +21,16 @@ SchroederReverb::~SchroederReverb()
     delete[] combs;
 }
 
-void SchroederReverb::prepareToPlay(float sampleRate)
+void SchroederReverb::prepareToPlay(float sampleRate, int totalNumInputChannels)
 {
-    allpasses[0].prepareToPlay(9.0f, 0.7, sampleRate);
-    allpasses[1].prepareToPlay(3.0f, 0.7, sampleRate);
-    allpasses[2].prepareToPlay(1.0f, 0.7, sampleRate);
+    allpasses[0].prepareToPlay(9.0f, 0.7, sampleRate, totalNumInputChannels);
+    allpasses[1].prepareToPlay(3.0f, 0.7, sampleRate, totalNumInputChannels);
+    allpasses[2].prepareToPlay(1.0f, 0.7, sampleRate, totalNumInputChannels);
 
-    combs[0].prepareToPlay(80.0f, 0.77, sampleRate, 1);
-    combs[1].prepareToPlay(80.0f, 0.8, sampleRate, 1);
-    combs[2].prepareToPlay(95.0f, 0.75, sampleRate, 1);
-    combs[3].prepareToPlay(100.0f, 0.73, sampleRate, 1);
+    combs[0].prepareToPlay(80.0f, 0.77, sampleRate, totalNumInputChannels, 1);
+    combs[1].prepareToPlay(80.0f, 0.8, sampleRate, totalNumInputChannels, 1);
+    combs[2].prepareToPlay(95.0f, 0.75, sampleRate, totalNumInputChannels, 1);
+    combs[3].prepareToPlay(100.0f, 0.73, sampleRate, totalNumInputChannels, 1);
 }
 
 void SchroederReverb::process(juce::AudioBuffer<float>& buffer)
@@ -52,14 +52,14 @@ void SchroederReverb::process(juce::AudioBuffer<float>& buffer)
         // 1: Allpasses in series
         for (int ap = 0; ap < apSize; ap++)
         {
-            inputSample = allpasses[ap].process(inputSample);
+            inputSample = allpasses[ap].process(inputSample, 0);
         }
 
         // 2: Combs in parallel
         float combSection[4];
         for (int c = 0; c < cSize; c++)
         {
-            combSection[c] = combs[c].process(inputSample);
+            combSection[c] = combs[c].process(inputSample, 0);
         }
 
         // 3: Matrix mixing

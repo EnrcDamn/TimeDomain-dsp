@@ -18,22 +18,22 @@ public:
     AllPass();
     ~AllPass();
 
-    void prepareToPlay(float dTimeMs, float gain, float sampleRate);
+    void prepareToPlay(float dTimeMs, float gain, float sampleRate, int totalNumInputChannels);
 
     void setGainCoefficient(float breakFrequency);
 
     float getGainCoefficient();
 
-    float process(float);
+    float process(float currentSample, const int channel);
 
 private:
-    void initDelayLine(float dTimeMs, float sampleRate);
+    void initDelayLine(float dTimeMs, float sampleRate, int totalNumInputChannels);
 
     float sampleRate;
     float delayTime;
     float gain;
 
     float delayIn;
-    DelayLine delay;
     float delayOut;
+    DelayLine delay;
 };

@@ -107,7 +107,9 @@ void TimeDomainTestingAudioProcessor::changeProgramName (int index, const juce::
 //==============================================================================
 void TimeDomainTestingAudioProcessor::prepareToPlay (double sampleRate, int samplesPerBlock)
 {
-    lpf.prepareToPlay(static_cast<float>(sampleRate));
+    int totalNumInputChannels = getTotalNumInputChannels();
+
+    lpf.prepareToPlay(static_cast<float>(sampleRate), totalNumInputChannels);
 }
 
 void TimeDomainTestingAudioProcessor::releaseResources()

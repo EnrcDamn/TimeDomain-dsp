@@ -17,17 +17,17 @@ public:
     Comb();
     ~Comb();
 
-    void initDelayLine(float dTimeMs, float sampleRate);
+    void initDelayLine(float dTimeMs, float sampleRate, int totalNumInputChannels);
 
-    void prepareToPlay(float dTimeMs, float gain, float sampleRate, int mode);
+    void prepareToPlay(float dTimeMs, float gain, float sampleRate, int totalNumInputChannels, int mode);
 
-    float process(float);
+    float process(float currentSample, const int channel);
 
-    float feedforwardCombOut(float);
+    float feedforwardCombOut(float currentSample, const int channel);
 
-    float feedbackCombOut(float);
+    float feedbackCombOut(float currentSample, const int channel);
 
-    float LPFCombOut(float);
+    float LPFCombOut(float currentSample, const int channel); 
 
 private:
     int mode;

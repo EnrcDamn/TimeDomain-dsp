@@ -20,7 +20,9 @@ public:
 
     void prepareToPlay(float dTimeMs, float gain, float sampleRate);
 
-    float setGainCoefficient(float breakFrequency);
+    void setGainCoefficient(float breakFrequency);
+
+    float getGainCoefficient();
 
     float process(float);
 

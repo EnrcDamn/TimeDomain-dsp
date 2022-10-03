@@ -43,5 +43,5 @@ void TimeDomainTestingAudioProcessorEditor::paint (juce::Graphics& g)
 
 void TimeDomainTestingAudioProcessorEditor::resized()
 {
-    cutoffFrequencySlider.setBounds(getLocalBounds());
+    cutoffFrequencySlider.setBounds(getLocalBounds()/2);
 }

@@ -60,7 +60,7 @@ public:
 private:
     juce::AudioProcessorValueTreeState treeState;
     std::atomic<float>* cutoffFrequencyParam = nullptr;
-    LowPass lpf;
+    HighPass hpf;
 
     //==============================================================================
     JUCE_DECLARE_NON_COPYABLE_WITH_LEAK_DETECTOR (TimeDomainTestingAudioProcessor)

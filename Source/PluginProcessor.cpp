@@ -109,7 +109,7 @@ void TimeDomainTestingAudioProcessor::prepareToPlay (double sampleRate, int samp
 {
     int totalNumInputChannels = getTotalNumInputChannels();
 
-    lpf.prepareToPlay(static_cast<float>(sampleRate), totalNumInputChannels);
+    hpf.prepareToPlay(static_cast<float>(sampleRate), totalNumInputChannels);
 }
 
 void TimeDomainTestingAudioProcessor::releaseResources()
@@ -155,9 +155,9 @@ void TimeDomainTestingAudioProcessor::processBlock (juce::AudioBuffer<float>& bu
 
     const auto cutoffFrequency = cutoffFrequencyParam->load();
 
-    lpf.setCutoffFrequency(cutoffFrequency);
+    hpf.setCutoffFrequency(cutoffFrequency);
 
-    lpf.process(buffer);
+    hpf.process(buffer);
 }
 
 //==============================================================================
